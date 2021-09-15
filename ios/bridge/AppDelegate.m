@@ -3,6 +3,7 @@
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+#import "RCTCalendarModule.h"
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -25,6 +26,8 @@ static void InitializeFlipper(UIApplication *application) {
 
 @implementation AppDelegate
 
+RCTCalendarModule *rctCalendarModule;
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 #ifdef FB_SONARKIT_ENABLED
@@ -46,8 +49,18 @@ static void InitializeFlipper(UIApplication *application) {
   UIViewController *rootViewController = [UIViewController new];
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
+  
+  [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(sendEventAToReactNative:) userInfo:nil repeats:TRUE];
+  
+  rctCalendarModule = [RCTCalendarModule allocWithZone:nil];
+  
   [self.window makeKeyAndVisible];
+  
   return YES;
+}
+
+-(void) sendEventAToReactNative:(NSTimer *)ttimer{
+  [rctCalendarModule sendEventWithName:@"EventA" body:@{ @"name": @"Tung Tran"}];
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
